@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rate Our Service</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+      background-color: #f9f9f9;
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+    .stars {
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .stars input {
+      display: none;
+    }
+    .stars label {
+      font-size: 2.5rem;
+      color: lightgray;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .stars input:checked ~ label,
+    .stars label:hover,
+    .stars label:hover ~ label {
+      color: gold;
+    }
+    #rating-value {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #0078D4;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005fa3;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Rate Our Service</h2>
+  <form id="rating-form">
+    <div class="stars">
+      <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
+      <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+      <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+      <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+      <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+    </div>
+
+    <div id="rating-value">Your rating: none</div>
+    <button type="submit">Submit Rating</button>
+  </form>
+
+  <script>
+    const stars = document.querySelectorAll('input[name="rating"]');
+    const ratingDisplay = document.getElementById('rating-value');
+    let selectedRating = null;
+
+    stars.forEach(star => {
+      star.addEventListener('change', () => {
+        selectedRating = star.value;
+        ratingDisplay.textContent = `Your rating: ${selectedRating} star${selectedRating > 1 ? 's' : ''}`;
+      });
+    });
+
+    document.getElementById('rating-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (!selectedRating) {
+        alert("Please select a rating before submitting.");
+        return;
+      }
+
+      // Replace with your n8n webhook URL
+      fetch("https://your-n8n-webhook-url.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ rating: selectedRating })
+      })
+      .then(response => {
+        if (response.ok) {
+          alert("Thanks for your feedback!");
+        } else {
+          alert("Something went wrong. Please try again.");
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        alert("Error submitting rating.");
+      });
+    });
+  </script>
+
+</body>
+</html>
